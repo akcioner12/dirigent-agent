@@ -4,7 +4,9 @@
   /scan  - запустить цикл мониторинга вручную
   /status - сколько постов опубликовано сегодня
 """
+import base64
 import logging
+import os
 from telegram import Update
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -12,6 +14,27 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 import db
 from config import BOT_TOKEN, ADMIN_TELEGRAM_ID, DAILY_POST_TARGET
 from orchestrator import run_monitoring_cycle, handle_approval_callback
+
+
+def restore_telethon_session():
+    """
+    На Railway нет интерактивного терминала для первой авторизации Telethon,
+    поэтому сессия передаётся через переменную окружения TG_SESSION_B64
+    (сгенерированную локально через auth_telethon.py) и восстанавливается
+    в файл при каждом старте сервиса.
+    """
+    session_b64 = os.getenv("TG_SESSION_B64")
+    if not session_b64:
+        logging.warning(
+            "TG_SESSION_B64 не задана - мониторинг конкурентов не будет работать. "
+            "Запусти auth_telethon.py локально и добавь переменную в Railway."
+        )
+        return
+    session_path = "monitor_session.session"
+    if not os.path.exists(session_path):
+        with open(session_path, "wb") as f:
+            f.write(base64.b64decode(session_b64))
+        logging.info("Telethon-сессия восстановлена из TG_SESSION_B64.")
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -49,6 +72,7 @@ async def scheduled_scan(app: Application):
 
 
 def main():
+    restore_telethon_session()
     db.init_db()
 
     app = Application.builder().token(BOT_TOKEN).build()
