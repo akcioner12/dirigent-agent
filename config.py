@@ -15,10 +15,30 @@ ADMIN_TELEGRAM_ID = int(os.getenv("ADMIN_TELEGRAM_ID", "0"))
 TARGET_CHANNEL = os.getenv("TARGET_CHANNEL", "@Crypto_AI_Forex")
 
 # Список TG-каналов конкурентов для мониторинга.
-# Заполни username-ами каналов (без @, как требует Telethon, например "some_channel").
 SOURCE_CHANNELS = [
-    # "channel_username_1",
-    # "channel_username_2",
+    # Крипта
+    "crypto_Iemon",
+    "to_the_makemoney",
+    "airolejon",
+    "eeusd",
+    "if_crypto_ru",
+    "cryptomedwed",
+    "cryptanci",
+    "DeCenter",
+    "cointelegraph",
+    # AI
+    "neurobussines",
+    "naebnet",
+    "neyroseti_dr",
+    "loading100ai",
+    # Форекс
+    "PROFiInvest",
+    "tradeforexexchange",
+    "premiumgolubev",
+    "markoptions",
+    "newwavetrade",
+    "goldenonemoney",
+    "uiartemzvezdin",
 ]
 
 # Сколько постов в день готовим (целевой темп MVP)
