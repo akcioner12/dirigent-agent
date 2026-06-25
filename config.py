@@ -26,6 +26,7 @@ SOURCE_CHANNELS = [
     "cryptanci",
     "DeCenter",
     "cointelegraph",
+    "letsCatapult",
     # AI
     "neurobussines",
     "naebnet",
